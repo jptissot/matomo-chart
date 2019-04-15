@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "matomo.fullname" . -}}
-{{- $ingressPaths := .Values.ingress.paths -}}
+{{- $servicePort := .Values.service.port -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -30,11 +30,8 @@ spec:
     - host: {{ . | quote }}
       http:
         paths:
-	{{- range $ingressPaths }}
-          - path: {{ . }}
-            backend:
+          - backend:
               serviceName: {{ $fullName }}
-              servicePort: http
-	{{- end }}
+              servicePort: {{ $servicePort }}
   {{- end }}
 {{- end }}
