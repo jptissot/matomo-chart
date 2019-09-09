@@ -25,9 +25,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: MARIADB_HOST
-              value: {{ .Release.Name -}}-mariadb
+              value: {{ .Values.mariadb.deployChart | ternary (printf "%s-mariadb" .Release.Name) .Values.mariadb.db.host }}
             - name: MARIADB_PORT_NUMBER
-              value: !!string {{ .Values.mariadb.service.port }}
+              value: !!string {{ .Values.mariadb.deployChart | ternary .Values.mariadb.service.port .Values.mariadb.db.port }}
             - name: MATOMO_DATABASE_NAME
               value: {{ .Values.mariadb.db.name }}
             - name: MATOMO_DATABASE_USER
@@ -35,7 +35,7 @@ spec:
             - name: MATOMO_DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "matomo.mariasecret" . }}
+                  name: {{ .Values.mariadb.deployChart | ternary (include "matomo.mariasecret" .) (include "matomo.fullname" .) }}
                   key: mariadb-password
             {{- if .Values.matomoEmail }}
             - name: MATOMO_EMAIL

@@ -51,12 +51,22 @@ tolerations: []
 affinity: {}
 
 mariadb:
+  ## Switch to either deploy mariaDB as part of the chart, or use an external MariaDB instance :
+  ## (external mariadb requires mariadb.db.host and mariadb.db.port to be set)
+  deployChart: true
   db:
     ## Database to create
     ## ref: https://github.com/bitnami/bitnami-docker-mariadb#creating-a-database-on-first-run
     ##
     name: matomo_db
     user: matomo_user
+    # password:
+
+    # Only used when internal MariaDB is disabled (mariadb.deployChart=false)
+    host: mariadb.example.com
+    port: 3306
+  service:
+    port: 3306
   replication:
     enabled: false
   master:
