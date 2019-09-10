@@ -51,8 +51,11 @@ spec:
             {{- end }}
             {{- if .Values.matomoPassword }}
             - name: MATOMO_PASSWORD
-              value: {{ .Values.matomoPassword | quote }}
-            {{- end }}      
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "matomo.fullname" . }}
+                  key: MATOMO_PASSWORD
+            {{- end }}
           {{- if .Values.smtp.enabled }}
             {{- if .Values.smtp.protocol }}
             - name: SMTP_PROTOCOL

@@ -3,4 +3,4 @@ appVersion: "1.0"
 description: Matomo helm chart
 name: matomo
 icon: "https://bitnami.com/assets/stacks/matomo/img/matomo-stack-110x117.png"
-version: 1.0.0-alpha
+version: 1.0.0-alpha1
