@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ include "matomo.fullname" . }}
   labels:
@@ -19,6 +19,10 @@ spec:
         app.kubernetes.io/name: {{ include "matomo.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      volumes:
+        - name: shared-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumeClaim.existingClaim | default (include "matomo.fullname" .) }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -83,7 +87,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /bitnami
-              name: volume
+              name: shared-data
 {{- include "matomo.imagePullSecrets" . | indent 6 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -97,21 +101,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-  volumeClaimTemplates:
-    - metadata:
-        name: volume
-      {{- with .Values.volumeClaim.annotations }}
-        annotations:
-        {{- range $key, $value := . }}
-          {{ $key }}: {{ $value }}
-        {{- end }}
-        {{- end }}
-      spec:
-        accessModes:
-        {{- range .Values.volumeClaim.accessModes }}
-          - {{ . | quote }}
-        {{- end }}
-        resources:
-          requests:
-            storage: {{ .Values.volumeClaim.size | quote }}
-        storageClassName: {{ .Values.volumeClaim.storageClass }}

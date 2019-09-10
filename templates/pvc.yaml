@@ -1,0 +1,30 @@
+{{- if not .Values.volumeClaim.existingClaim }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "matomo.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "matomo.name" . }}
+    helm.sh/chart: {{ include "matomo.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.volumeClaim.annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+  {{- end }}
+spec:
+  {{- if .Values.volumeClaim.storageClass }}
+  storageClassName: {{ .Values.volumeClaim.storageClass | quote }}
+  {{- end }}
+
+  accessModes:
+  {{- range .Values.volumeClaim.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+
+  resources:
+    requests:
+      storage: {{ .Values.volumeClaim.size | quote }}
+{{- end }}
