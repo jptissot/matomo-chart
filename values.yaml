@@ -27,10 +27,13 @@ ingress:
   #    hosts:
   #      - chart-example.local
 volumeClaim:
+  # Reuse existing claim: (if empty, a new PVC will be created)
+  existingClaim:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   size: 1Gi
-  storageClass: default
+  # Specific storage class (if empty, the cluster default will be used)
+  storageClass:
 
 smtp:
   enabled: false
