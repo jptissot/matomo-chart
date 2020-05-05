@@ -1,6 +1,11 @@
-apiVersion: v1
+apiVersion: v2
 appVersion: "1.0"
 description: Matomo helm chart
 name: matomo
 icon: "https://bitnami.com/assets/stacks/matomo/img/matomo-stack-110x117.png"
 version: 1.0.0-alpha1
+dependencies:
+  - name: mariadb
+    version: 5.11.1
+    repository: https://kubernetes-charts.storage.googleapis.com
+    condition: mariadb.deployChart

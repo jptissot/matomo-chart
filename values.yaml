@@ -29,7 +29,7 @@ ingress:
 volumeClaim:
   # Reuse existing claim: (if empty, a new PVC will be created)
   accessModes:
-    - ReadWriteOne
+    - ReadWriteOnce
   size: 1Gi
   # Specific storage class (if empty, the cluster default will be used)
   storageClass:
